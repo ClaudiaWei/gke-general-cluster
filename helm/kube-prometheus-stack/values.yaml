@@ -1,0 +1,60 @@
+prometheus:
+  prometheusSpec:
+    retention: 60d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+grafana:
+  persistence:
+    type: pvc
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 30Gi
+  ingress:
+    enabled: false
+    annotations:
+      kubernetes.io/ingress.class: gce
+      networking.gke.io/managed-certificates: grafana-managed-cert
+      networking.gke.io/v1beta1.FrontendConfig: lb-http-to-https
+  service:
+    type: NodePort
+    nodePort: 30001
+  extraSecretMounts:
+    - name: google-auth-secret-mount
+      secretName: google-auth-secret
+      defaultMode: 0440
+      mountPath: /etc/secrets/auth
+      readOnly: true
+  plugins:
+    - doitintl-bigquery-datasource
+    - grafana-bigquery-datasource
+
+  grafana.ini:
+    server:
+      root_url: <your-service-domain-name>
+    paths:
+      data: /var/lib/grafana/
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: <your-service-domain-name>
+    auth.google:
+      enabled: true
+      client_id: <your-client-id>
+      client_secret: $__file{/etc/secrets/auth/client_secret}
+      scopes: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"
+      auth_url: https://accounts.google.com/o/oauth2/auth
+      token_url: https://oauth2.googleapis.com/token
+      allowed_domains: <your-domain-name>
+      allow_sign_up: true
+    

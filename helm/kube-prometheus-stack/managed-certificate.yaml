@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: grafana-managed-cert
+  namespace: prom
+spec:
+  domains:
+    - <your-service-domain-name>
