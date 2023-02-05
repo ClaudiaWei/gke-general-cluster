@@ -1,0 +1,6 @@
+project_id          = "<your-project-id>"
+region              = "us-west1"
+zone                = "us-west1-b"
+min_master_version  = "1.24.5-gke.600"
+gke_service_account = "<your-gke-service-account>"
+machine_type        = "n1-standard-1"
