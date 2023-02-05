@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-monitor-exporter
+  namespace: prom
+  labels:
+    app: data-monitor-exporter # cooresponding to servicemonitor labels
+spec:
+  ports:
+  - name: metrics
+    port: 8000
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    name: data-monitor-exporter

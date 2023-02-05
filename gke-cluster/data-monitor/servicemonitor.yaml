@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: data-monitor-exporter
+  namespace: prom
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: data-monitor-exporter
+  endpoints:
+  - port: metrics
+    path: /metrics

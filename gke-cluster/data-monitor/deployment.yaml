@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-monitor-exporter
+  namespace: prom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: data-monitor-exporter
+  template:
+    metadata:
+      labels:
+        name: data-monitor-exporter
+    spec:
+      containers:
+        - name: data-monitor-exporter
+          image: <your-gcr-image>
+          volumeMounts:
+            - name: data-monitor-exporter-gcp-creds
+              mountPath: "/app/gcp-creds.json"
+              subPath: gcp-creds.json
+              readOnly: true
+          ports:
+            - name: metrics
+              containerPort: 8000
+          resources:
+            requests:
+              cpu: 500m
+              memory: 4Gi
+            limits:
+              cpu: 500m
+              memory: 4Gi
+      volumes:
+        - name: data-monitor-exporter-gcp-creds
+          secret:
+            secretName: data-monitor-exporter-gcp-creds
